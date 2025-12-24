@@ -1,0 +1,13 @@
+OS stuff:
+- interrupt table X
+- keyboard inputs
+- PIT timer
+- PIT audio
+- load more of the disk if necessary
+
+Snake:
+
+TODO:
+- figure out how I/O ports work + out/in assembly instructions X
+- learn what the PIC does and how to use it
+- implement interrupt requests
