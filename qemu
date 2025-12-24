@@ -1,1 +1,9 @@
-qemu-system-i386 -net none -drive format=raw,file=bootloader.img
+#!/bin/bash
+if [[ "$1" == "-d" ]]; then
+  qemu-system-i386 -s -S -net none -drive format=raw,file=bootloader.img
+  # QEMU=$!
+  # i686-elf-gdb
+  # kill $QEMU
+else
+  qemu-system-i386 -net none -drive format=raw,file=bootloader.img
+fi

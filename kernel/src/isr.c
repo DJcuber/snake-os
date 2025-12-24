@@ -14,6 +14,6 @@ void irq_handler(registers_t regs) {
   // Reset master signal
   outb(0x20, 0x20);
 
-  put_pixel(regs.int_no, 0, VGA_WIDTH-1);
+  put_pixel(regs.int_no, VGA_WIDTH-1, 0);
   //TODO: make actual handler
 }

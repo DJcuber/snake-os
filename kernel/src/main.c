@@ -8,7 +8,10 @@ void kernel_main() {
   init_idt();
   border();
 
-  int c = 5 / 0;
+  asm volatile ("int $0x20");
+  asm volatile ("int $0x21");
+
+  // int c = 5 / 0;
   // asm volatile("int $0x05");
 
   /*
