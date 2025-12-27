@@ -1,4 +1,5 @@
 ENTRY(kernel_main)
+OUTPUT_FORMAT(elf32-i386)
 
 SECTIONS {
   . = 0x7C00;
@@ -18,8 +19,12 @@ SECTIONS {
   }
 
   . = 0x8000;
-  .kernel : SUBALIGN(4) {
+  .text : SUBALIGN(4) {
     *(.text*)
+  }
+
+  .data : SUBALIGN(4) {
+    __data_start = .;
     *(.rodata*)
     *(.data*)
   }
@@ -32,5 +37,5 @@ SECTIONS {
   . = ALIGN(4);
   __bss_end = .;
 
-  kernel_sectors = (SIZEOF(.kernel) + 511) / 512;
+  kernel_sectors = (SIZEOF(.text) + 511) / 512;
 }

@@ -3,13 +3,15 @@
 
 #include "video.h"
 #include "idt.h"
+#include "timer.h"
 
 void kernel_main() {
   init_idt();
   border();
 
-  asm volatile ("int $0x20");
-  asm volatile ("int $0x21");
+  init_timer(128);
+
+  // asm volatile ("int $0x20");
 
   // int c = 5 / 0;
   // asm volatile("int $0x05");

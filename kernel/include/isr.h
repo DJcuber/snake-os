@@ -10,4 +10,7 @@ typedef struct registers_struct {
   uint32_t eip, cs, eflags, useresp, ss;
 } registers_t;
 
+typedef void (*isr_t)(registers_t); // god knows how this works, thanks James!
+void set_isr_callback(uint8_t n, isr_t handler);
+
 #endif

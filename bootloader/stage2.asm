@@ -35,8 +35,10 @@ p_mode:
   mov fs, ax
   mov gs, ax
 
-  mov ebp, 0x90000
+  mov ebp, 0x7C00
   mov esp, ebp
 
   call kernel_main
+loop:
   hlt 
+  jmp loop

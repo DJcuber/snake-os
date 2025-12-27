@@ -1,2 +1,2 @@
 #!/bin/bash
-i686-elf-gdb
+i686-elf-gdb -tui

@@ -16,16 +16,16 @@ void init_idt() {
   remap_PIC();
 
   // Sets interrupt service routines
-  idt_set(0, (uint32_t)isr0);
-  idt_set(1, (uint32_t)isr1);
-  idt_set(2, (uint32_t)isr2);
-  idt_set(3, (uint32_t)isr3);
-  idt_set(4, (uint32_t)isr4);
-  idt_set(5, (uint32_t)isr5);
-  idt_set(6, (uint32_t)isr6);
-  idt_set(7, (uint32_t)isr7);
-  idt_set(8, (uint32_t)isr8);
-  idt_set(9, (uint32_t)isr9);
+  idt_set(0 , (uint32_t)isr0 );
+  idt_set(1 , (uint32_t)isr1 );
+  idt_set(2 , (uint32_t)isr2 );
+  idt_set(3 , (uint32_t)isr3 );
+  idt_set(4 , (uint32_t)isr4 );
+  idt_set(5 , (uint32_t)isr5 );
+  idt_set(6 , (uint32_t)isr6 );
+  idt_set(7 , (uint32_t)isr7 );
+  idt_set(8 , (uint32_t)isr8 );
+  idt_set(9 , (uint32_t)isr9 );
   idt_set(10, (uint32_t)isr10);
   idt_set(11, (uint32_t)isr11);
   idt_set(12, (uint32_t)isr12);
@@ -50,16 +50,16 @@ void init_idt() {
   idt_set(31, (uint32_t)isr31);
 
   // Sets interrupt requests
-  idt_set(32, (uint32_t)irq0);
-  idt_set(33, (uint32_t)irq1);
-  idt_set(34, (uint32_t)irq2);
-  idt_set(35, (uint32_t)irq3);
-  idt_set(36, (uint32_t)irq4);
-  idt_set(37, (uint32_t)irq5);
-  idt_set(38, (uint32_t)irq6);
-  idt_set(39, (uint32_t)irq7);
-  idt_set(40, (uint32_t)irq8);
-  idt_set(41, (uint32_t)irq9);
+  idt_set(32, (uint32_t)irq0 );
+  idt_set(33, (uint32_t)irq1 );
+  idt_set(34, (uint32_t)irq2 );
+  idt_set(35, (uint32_t)irq3 );
+  idt_set(36, (uint32_t)irq4 );
+  idt_set(37, (uint32_t)irq5 );
+  idt_set(38, (uint32_t)irq6 );
+  idt_set(39, (uint32_t)irq7 );
+  idt_set(40, (uint32_t)irq8 );
+  idt_set(41, (uint32_t)irq9 );
   idt_set(42, (uint32_t)irq10);
   idt_set(43, (uint32_t)irq11);
   idt_set(44, (uint32_t)irq12);
@@ -77,9 +77,9 @@ static void remap_PIC() {
 
   // ICW2: PIC vector offset
   outb(0x21, 0x20);
-  outb(0xA0, 0x28);
+  outb(0xA1, 0x28);
 
-  // ICW3: Tell the PIC's how they are related
+  // ICW3: Tell the PIC's how they are related to each other
   outb(0x21, 0x04);
   outb(0xA1, 0x02);
 

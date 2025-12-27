@@ -9,5 +9,7 @@ Snake:
 
 TODO:
 - figure out how I/O ports work + out/in assembly instructions X
-- learn what the PIC does and how to use it
-- implement interrupt requests
+- learn what the PIC does and how to use it X
+- implement interrupt requests X
+- learn and implement PIT (almost)
+- either PIC is not calling an interrupt, or the PIT is not communicating with the PIC

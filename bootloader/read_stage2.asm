@@ -9,7 +9,7 @@ read:
   mov bx, 0x7E00
 
   mov ah, 0x02
-  mov al, 15
+  mov al, 31 ;TODO
   mov ch, 0
   mov cl, 2
 
