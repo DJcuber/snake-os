@@ -18,4 +18,4 @@ $(KERNEL_S_OBJS): %.o : %.asm
 	$(AS) -f elf32 $< -o $@
 
 clean:
-	rm $(KERNEL_C_OBJS)
+	rm $(KERNEL_C_OBJS) $(KERNEL_S_OBJS) || true

@@ -5,7 +5,7 @@
 #include "isr.h"
 #include "video.h"
 
-static uint8_t tick = 0;
+uint8_t tick = 0;
 
 static void timer_callback(registers_t regs) {
   tick++;

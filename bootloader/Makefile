@@ -12,4 +12,4 @@ $(BOOTLOADER_S_OBJS): %.o : %.asm
 	$(AS) -f elf32 $< -o $@
 
 clean:
-	rm $(BOOTLOADER_S_OBJS)
+	rm $(BOOTLOADER_S_OBJS) || true

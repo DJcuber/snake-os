@@ -1,15 +1,14 @@
 OS stuff:
 - interrupt table X
-- keyboard inputs
-- PIT timer
+- keyboard inputs X
+- PIT timer X
+- write video driver X
+- random numbers X
+
 - PIT audio
 - load more of the disk if necessary
 
 Snake:
+- make keyboard input buffer
 
 TODO:
-- figure out how I/O ports work + out/in assembly instructions X
-- learn what the PIC does and how to use it X
-- implement interrupt requests X
-- learn and implement PIT (almost)
-- either PIC is not calling an interrupt, or the PIT is not communicating with the PIC

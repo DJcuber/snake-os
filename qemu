@@ -1,9 +1,9 @@
 #!/bin/bash
 if [[ "$1" == "-d" ]]; then
-  qemu-system-i386 -s -S -net none -drive format=raw,file=bootloader.img
+  qemu-system-i386 -s -S -net none -drive format=raw,file=os.img -cpu Broadwell-v4
   # QEMU=$!
   # i686-elf-gdb
   # kill $QEMU
 else
-  qemu-system-i386 -net none -drive format=raw,file=bootloader.img
+  qemu-system-i386 -net none -drive format=raw,file=os.img -cpu Broadwell-v4
 fi

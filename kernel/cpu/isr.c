@@ -21,7 +21,7 @@ void irq_handler(registers_t regs) {
   // Reset master signal
   outb(0x20, 0x20);
 
-  put_pixel(regs.int_no, VGA_WIDTH-1, 0); // Remove later
+  // put_pixel(regs.int_no, VGA_WIDTH-1, 0); // Remove later
 
   if (interrupt_callbacks[regs.int_no] != 0) {
     isr_t handler = interrupt_callbacks[regs.int_no];

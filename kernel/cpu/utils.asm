@@ -10,3 +10,8 @@ inb:
   mov dx, [esp+4]
   in al, dx
   ret
+
+global cpu_rand
+cpu_rand:
+  rdrand eax
+  ret
