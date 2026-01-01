@@ -51,11 +51,11 @@ irq_stub:
 
   call irq_handler
 
-  pop ebx
-  mov ds, bx
-  mov es, bx
-  mov fs, bx
-  mov gs, bx
+  pop eax
+  mov ds, ax
+  mov es, ax
+  mov fs, ax
+  mov gs, ax
 
   popa
   add esp, 8

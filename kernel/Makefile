@@ -3,7 +3,7 @@ GCC:=i686-elf-gcc
 
 AS:=nasm
 
-FLAGS:= -g -m32 -ffreestanding --no-builtin -I include
+FLAGS:= -g -m32 -ffreestanding --no-builtin -I include -Wall
 
 include make.config
 

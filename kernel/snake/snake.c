@@ -5,13 +5,32 @@
 #include "video.h"
 #include "utils.h"
 #include "timer.h"
+#include "keyboard.h"
 
-#define BORDER_COLOR 0x15
-#define SNAKE_COLOR  0x2F
-#define APPLE_COLOR  0x28
+#define BORDER_COLOR         0x15
+#define SNAKE_COLOR          0x2F
+#define APPLE_COLOR          0x28
 
-#define GRID_WIDTH   50
-#define GRID_HEIGHT  30
+#define GRID_WIDTH           20
+#define GRID_HEIGHT          20
+
+#define SQUARE_WIDTH         5
+#define BORDER_WIDTH         5
+#define GRID_WIDTH_PIXELS   (SQUARE_WIDTH * GRID_WIDTH  + (GRID_WIDTH-1))
+#define GRID_HEIGHT_PIXELS  (SQUARE_WIDTH * GRID_HEIGHT + (GRID_HEIGHT-1)) 
+#define GRID_OFFSET_X       ((VGA_WIDTH - (GRID_WIDTH_PIXELS + 2*BORDER_WIDTH)) / 2)
+#define GRID_OFFSET_Y       ((VGA_HEIGHT - (GRID_HEIGHT_PIXELS + 2*BORDER_WIDTH)) / 2)
+
+#define RIGHT                0
+#define UP                   1
+#define LEFT                 2
+#define DOWN                 3
+
+#define SPEED_SLOW           32
+#define SPEED_MEDIUM         16
+#define SPEED_FAST           8
+
+#define GAME_SPEED           SPEED_MEDIUM
 
 /* 
  * Each square contains 4 bits, 2 squares in a grid entry:
@@ -40,21 +59,14 @@ bool game_over = false;
  */
 
 static void draw_square(size_t x, size_t y, unsigned char color) {
-  draw_rect(6 * x + 11, 6 * y + 11, 5, 5, color);
+  draw_rect((SQUARE_WIDTH+1)*x + GRID_OFFSET_X + BORDER_WIDTH, (SQUARE_WIDTH+1)*y + GRID_OFFSET_Y + BORDER_WIDTH, SQUARE_WIDTH, SQUARE_WIDTH, color);
 }
 
 static void draw_border() {
-  draw_rect(6, 6, VGA_WIDTH-11, 5, BORDER_COLOR);
-  draw_rect(6, 11, 5, VGA_HEIGHT-16, BORDER_COLOR);
-  draw_rect(VGA_WIDTH-10, 11, 5, VGA_HEIGHT-16, BORDER_COLOR);
-  draw_rect(6, VGA_HEIGHT-10, VGA_WIDTH-11, 5, BORDER_COLOR);
-
-  /*
-  vga_buffer[0] = 100;
-  vga_buffer[VGA_WIDTH-1] = 100;
-  vga_buffer[VGA_WIDTH*(VGA_HEIGHT-1)] = 100;
-  vga_buffer[VGA_WIDTH*VGA_HEIGHT-1] = 100;
-  */
+  draw_rect(GRID_OFFSET_X, GRID_OFFSET_Y, GRID_WIDTH_PIXELS+2*BORDER_WIDTH, BORDER_WIDTH, BORDER_COLOR);
+  draw_rect(GRID_OFFSET_X, GRID_OFFSET_Y+BORDER_WIDTH, BORDER_WIDTH, GRID_HEIGHT_PIXELS+BORDER_WIDTH, BORDER_COLOR);
+  draw_rect(GRID_OFFSET_X+BORDER_WIDTH+GRID_WIDTH_PIXELS, GRID_OFFSET_Y+BORDER_WIDTH, BORDER_WIDTH, GRID_HEIGHT_PIXELS+BORDER_WIDTH, BORDER_COLOR);
+  draw_rect(GRID_OFFSET_X+BORDER_WIDTH, GRID_OFFSET_Y+BORDER_WIDTH+GRID_HEIGHT_PIXELS, GRID_WIDTH_PIXELS, BORDER_WIDTH, BORDER_COLOR);
 }
 
 static inline uint8_t get_square(size_t x, size_t y) {
@@ -68,7 +80,7 @@ static void place_obj(size_t x, size_t y, bool apple, size_t direction) {
   grid[y][x/2] &= 0x00 | (0x0F << (4 * (1 - x % 2)));
 
   uint8_t data = 8;
-  data |= apple << 3;
+  data |= apple << 2;
   data |= direction;
 
   grid[y][x/2] |= data << (4 * (x % 2));
@@ -97,17 +109,17 @@ static void place_apple() {
 
 static void get_offset(uint8_t* x, uint8_t* y, uint8_t direction) {
   switch (direction) {
-    case 0:
+    case RIGHT:
       (*x)++;
       break;
-    case 1:
-      (*y)++;
+    case UP:
+      (*y)--;
       break;
-    case 2:
+    case LEFT:
       (*x)--;
       break;
-    case 3:
-      (*y)--;
+    case DOWN:
+      (*y)++;
       break;
   }
 }
@@ -123,7 +135,7 @@ static void move_snake() {
 
   uint8_t next_square = get_square(new_x, new_y);
 
-  if (bounds_check == false || (next_square & 8 == 1 && next_square & 4 == 0)) {
+  if (bounds_check == false || (((next_square >> 3) & 1) == 1 && ((next_square >> 2) & 1) == 0)) {
     game_over = true;
     return;
   }
@@ -135,7 +147,7 @@ static void move_snake() {
   snake.head_x = new_x;
   snake.head_y = new_y;
 
-  if (next_square & 8 == 1)  {
+  if ((next_square & 4) != 0)  {
     // eat apple
     snake.size++;
     place_apple();
@@ -156,11 +168,39 @@ static void move_snake() {
 
 void game_loop() {
   while (!game_over) {
-    uint8_t start = tick / 16;
+    uint8_t start = tick / GAME_SPEED;
     // do game loop
     move_snake();
+
+    uint16_t input = kb_buffer_pop();
+
+    switch (input) {
+      case KB_D:
+      case KB_RIGHT:
+        if (snake.direction != LEFT)
+          snake.direction = RIGHT;
+        break;
+
+      case KB_W:
+      case KB_UP:
+        if (snake.direction != DOWN)
+          snake.direction = UP;
+        break;
+
+      case KB_A:
+      case KB_LEFT:
+        if (snake.direction != RIGHT)
+          snake.direction = LEFT;
+        break;
+
+      case KB_S:
+      case KB_DOWN:
+        if (snake.direction != UP)
+          snake.direction = DOWN;
+        break; 
+    }
     
-    while (start == tick/16) {
+    while (start == tick / GAME_SPEED) {
       asm volatile ("hlt");
     }
   }
@@ -171,16 +211,16 @@ void init_game() {
   draw_border();
 
   snake.direction = 0; 
-  snake.head_x = 26;
-  snake.head_y = 14;
-  snake.tail_x = 23;
-  snake.tail_y = 14;
+  snake.head_x = GRID_WIDTH/2 + 2;
+  snake.head_y = GRID_HEIGHT/2;
+  snake.tail_x = GRID_WIDTH/2 - 1;
+  snake.tail_y = GRID_HEIGHT/2;
   snake.size = 4;
 
-  place_obj(23, 14, 0, 0);
-  place_obj(24, 14, 0, 0);
-  place_obj(25, 14, 0, 0);
-  place_obj(26, 14, 0, 0);
+  place_obj(GRID_WIDTH/2 - 1, GRID_HEIGHT/2, 0, 0);
+  place_obj(GRID_WIDTH/2, GRID_HEIGHT/2, 0, 0);
+  place_obj(GRID_WIDTH/2 + 1, GRID_HEIGHT/2, 0, 0);
+  place_obj(GRID_WIDTH/2 + 2, GRID_HEIGHT/2, 0, 0);
 
   place_apple();
 

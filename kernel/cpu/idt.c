@@ -72,28 +72,28 @@ void init_idt() {
 
 static void remap_PIC() {
   // ICW1: Tell the PIC's that they are going to be remapped
-  outb(0x20, 0x11);
-  outb(0xA0, 0x11);
+  outb(PIC1_COMMAND_PORT, ICW1_INIT | ICW1_EXTRA);
+  outb(PIC2_COMMAND_PORT, ICW1_INIT | ICW1_EXTRA);
 
   // ICW2: PIC vector offset
-  outb(0x21, 0x20);
-  outb(0xA1, 0x28);
+  outb(PIC1_DATA_PORT, ICW2_OFFSET);
+  outb(PIC2_DATA_PORT, ICW2_OFFSET+8);
 
   // ICW3: Tell the PIC's how they are related to each other
-  outb(0x21, 0x04);
-  outb(0xA1, 0x02);
+  outb(PIC1_DATA_PORT, 0x04);
+  outb(PIC2_DATA_PORT, 0x02);
 
   // ICW4: Use 8086 mode
-  outb(0x21, 0x01);
-  outb(0xA1, 0x01);
+  outb(PIC1_DATA_PORT, ICW4_8086);
+  outb(PIC2_DATA_PORT, ICW4_8086);
 
-  // Unmask interrupt
-  outb(0x21, 0x00);
-  outb(0xA1, 0x00);
+  // Unmask interrupts
+  outb(PIC1_DATA_PORT, 0x00);
+  outb(PIC2_DATA_PORT, 0x00);
 }
 
 static void idt_set(uint8_t gate_no, uint32_t offset) {
-  set_gate(gate_no, offset, 0x08, 0x8E);
+  set_gate(gate_no, offset, GDT_CODE_SEG, INTERRUPT_GATE);
 }
 
 static void set_gate(uint8_t gate_no, uint32_t offset, uint16_t selector, uint8_t flags) {

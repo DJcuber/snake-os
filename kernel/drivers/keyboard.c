@@ -8,6 +8,8 @@
 
 static bool extended = false;
 
+queue_t input_buffer;
+
 static void keyboard_callback(registers_t regs) {
   uint16_t sc = inb(0x60);
 
@@ -20,15 +22,38 @@ static void keyboard_callback(registers_t regs) {
     extended = false;
   }
 
-  // TODO: 
-  if (sc == KB_SPACE)
-    put_pixel(0x20, VGA_WIDTH-1, 0);
-  else if (sc == KB_RIGHT)
-    put_pixel(0x28, VGA_WIDTH-1, 0);
-  else
-    put_pixel(0x00, VGA_WIDTH-1, 0);
+  if (sc == KB_W || sc == KB_A || sc == KB_S || sc == KB_D ||
+      sc == KB_UP || sc == KB_LEFT || sc == KB_RIGHT || sc == KB_DOWN) {
+    kb_buffer_push(sc);
+  }
+}
+
+static void kb_buffer_init() {
+  input_buffer.front = 0;
+  input_buffer.back = 9;
+}
+
+void kb_buffer_push(uint16_t sc) {
+  size_t next = (input_buffer.back+1) % BUFFER_SIZE;
+  if (input_buffer.front == next && input_buffer.buffer[next] != 0) {
+    return;
+  }
+  
+  input_buffer.buffer[next] = sc;
+  input_buffer.back = next;
+}
+
+uint16_t kb_buffer_pop() {
+  if (input_buffer.buffer[input_buffer.front] == 0) {
+    return 0;
+  }
+  uint16_t curr = input_buffer.buffer[input_buffer.front];
+  input_buffer.buffer[input_buffer.front] = 0;
+  input_buffer.front = (input_buffer.front+1) % BUFFER_SIZE;
+  return curr;
 }
 
 void init_keyboard() {
   set_isr_callback(33, &keyboard_callback);
+  kb_buffer_init();
 }

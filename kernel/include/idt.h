@@ -3,6 +3,21 @@
 
 #include <stdint.h>
 
+#define INTERRUPT_GATE    0x8E
+#define GDT_CODE_SEG      0x08
+
+#define PIC1_COMMAND_PORT 0x20
+#define PIC1_DATA_PORT    0x21
+#define PIC2_COMMAND_PORT 0xA0
+#define PIC2_DATA_PORT    0xA1
+
+#define ICW1_EXTRA        0x01
+#define ICW1_INIT         0x10
+#define ICW2_OFFSET       0x20
+#define ICW4_8086         0x01
+
+#define PIC_RESET         0x20
+
 struct idt_descriptor_struct {
   uint16_t limit;
   uint32_t base;

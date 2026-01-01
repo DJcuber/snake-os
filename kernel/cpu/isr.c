@@ -1,4 +1,5 @@
 #include "isr.h"
+#include "idt.h"
 #include "video.h"
 #include "utils.h"
 
@@ -14,14 +15,12 @@ void isr_handler(registers_t regs) {
 }
 
 void irq_handler(registers_t regs) {
-  if (regs.int_no >= 40) {
+  if (regs.int_no >= ICW2_OFFSET + 8) {
     // Reset slave signal
-    outb(0xA0, 0x20);
+    outb(PIC2_COMMAND_PORT, PIC_RESET);
   }
   // Reset master signal
-  outb(0x20, 0x20);
-
-  // put_pixel(regs.int_no, VGA_WIDTH-1, 0); // Remove later
+  outb(PIC1_COMMAND_PORT, PIC_RESET);
 
   if (interrupt_callbacks[regs.int_no] != 0) {
     isr_t handler = interrupt_callbacks[regs.int_no];
