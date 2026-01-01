@@ -224,6 +224,11 @@ void init_game() {
 
   place_apple();
 
+  uint32_t start = tick;
+  while (tick <= start + 64) {
+    asm volatile ("hlt");
+  }
+
   game_loop();
 }
 

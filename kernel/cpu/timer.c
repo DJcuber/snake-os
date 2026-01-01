@@ -5,12 +5,10 @@
 #include "isr.h"
 #include "video.h"
 
-uint8_t tick = 0;
+uint32_t tick = 0;
 
 static void timer_callback(registers_t regs) {
   tick++;
-  if (tick == 128)
-    tick = 0;
 }
 
 void init_timer(uint32_t freq) {
