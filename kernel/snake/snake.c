@@ -11,8 +11,8 @@
 #define SNAKE_COLOR          0x2F
 #define APPLE_COLOR          0x28
 
-#define GRID_WIDTH           20
-#define GRID_HEIGHT          20
+#define GRID_WIDTH           25
+#define GRID_HEIGHT          25
 
 #define SQUARE_WIDTH         5
 #define BORDER_WIDTH         5
